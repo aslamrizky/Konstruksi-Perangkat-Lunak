@@ -25,6 +25,65 @@ class KodePos
     }
 }
 
+class DoorMachine
+{
+    private IState state;
+
+    public DoorMachine()
+    {
+        this.state = new LockedState(); 
+    }
+
+    public void SetState(IState state)
+    {
+        this.state = state;
+    }
+
+    public void Lock()
+    {
+        state.Lock(this);
+    }
+
+    public void Unlock()
+    {
+        state.Unlock(this);
+    }
+}
+
+interface IState
+{
+    void Lock(DoorMachine door);
+    void Unlock(DoorMachine door);
+}
+
+class LockedState : IState
+{
+    public void Lock(DoorMachine door)
+    {
+        Console.WriteLine("Pintu sudah terkunci");
+    }
+
+    public void Unlock(DoorMachine door)
+    {
+        Console.WriteLine("Pintu tidak terkunci");
+        door.SetState(new UnlockedState());
+    }
+}
+
+class UnlockedState : IState
+{
+    public void Lock(DoorMachine door)
+    {
+        Console.WriteLine("Pintu terkunci");
+        door.SetState(new LockedState());
+    }
+
+    public void Unlock(DoorMachine door)
+    {
+        Console.WriteLine("Pintu sudah tidak terkunci");
+    }
+}
+
 class Program
 {
     static void Main(string[] args)
@@ -40,5 +99,9 @@ class Program
         Console.WriteLine("Kode Pos Kebonwaru: " + KodePos.GetKodePos("Kebonwaru"));
         Console.WriteLine("Kode Pos Maleer: " + KodePos.GetKodePos("Maleer"));
         Console.WriteLine("Kode Pos Samoja: " + KodePos.GetKodePos("Samoja"));
+
+        DoorMachine door = new DoorMachine();
+        door.Unlock();
+        door.Lock();
     }
 }
